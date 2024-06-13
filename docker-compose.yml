@@ -15,7 +15,7 @@ services:
       context: ./docker/nginx
       dockerfile: nginx.Dockerfile
     ports:
-      - "8051:80"
+      - "8888:80"
     volumes:
       - ./src:/var/www/app
     depends_on:
@@ -23,15 +23,15 @@ services:
     networks:
       - laravel-network
 
-  db:
+  database:
     build:
       context: ./docker/mysql
       dockerfile: mysql.Dockerfile
     command: --innodb-data-file-path=/ibdata1:100M:autoextend
     environment:
-      MYSQL_DATABASE: laravel
+      MYSQL_DATABASE: ticketing
       MYSQL_USER: paulkusuma
-      MYSQL_PASSWORD: pauwerfull
+      MYSQL_PASSWORD: paulkusuma
       MYSQL_ROOT_PASSWORD: root
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     ports:
@@ -47,7 +47,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.51.0.0/24
+        - subnet: 172.15.51.0/24
 
 volumes:
   mysql-data:
