@@ -1,7 +1,7 @@
 # Stage 1: Build
 FROM php:8.1-fpm as build
 
-# Instalasi dependensi yang dibutuhkan untuk Laravel
+# Install dependencies needed for Laravel
 RUN apt-get update && apt-get install -y \
     git \
     libpng-dev \
@@ -15,37 +15,37 @@ RUN apt-get update && apt-get install -y \
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Mengatur direktori kerja
+# Set working directory
 WORKDIR /var/www/app
 
-# Menyalin composer.json dan composer.lock
+# Copy composer.json and composer.lock
 COPY composer.json composer.lock ./
 
-# Instal dependensi PHP menggunakan Composer
+# Install PHP dependencies using Composer
 RUN composer install --no-scripts --no-autoloader --prefer-dist --no-dev
 
 # Copy application code
 COPY . .
 
-# Menghasilkan file autoload dan cache
 RUN composer dump-autoload --optimize \
     && php artisan config:cache \
+    && php artisan route:clear \
     && php artisan route:cache
 
 # Stage 2: Runtime
 FROM php:8.1-fpm
 
-# Mengatur direktori kerja
+# Set working directory
 WORKDIR /var/www/app
 
-# Menyalin aplikasi dari tahap build
+# Copy application from the build stage
 COPY --from=build /var/www/app /var/www/app
 
-# Menyalin ekstensi PHP dari tahap build
+#Salin ekstensi PHP dari tahap build
 COPY --from=build /usr/local/lib/php/extensions/no-debug-non-zts-20210902 /usr/local/lib/php/extensions/no-debug-non-zts-20210902
 
-# Membuka port 9000 untuk PHP-FPM
+# Expose port 9000 for PHP-FPM
 EXPOSE 9000
 
-# Menetapkan entrypoint ke PHP-FPM
+# Set the entrypoint to PHP-FPM
 CMD ["php-fpm"]

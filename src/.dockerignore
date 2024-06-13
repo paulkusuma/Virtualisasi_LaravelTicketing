@@ -1,0 +1,20 @@
+# Direktori dan file yang diabaikan oleh Docker
+
+# Direktori dan file yang biasanya tidak perlu disertakan dalam image Docker
+/node_modules
+/vendor
+/public/storage
+/storage/*.key
+.env
+.env.*
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+
+# Direktori dan file yang biasanya diperlukan untuk pengembangan lokal, tetapi tidak diperlukan di lingkungan produksi
+/.idea
+/.vscode
+Homestead.json
+Homestead.yaml
